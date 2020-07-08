@@ -21,20 +21,35 @@ def valid_hex(code):
 
 @app.route('/color/<string:code>')
 def basics(code):
-    valid = valid_hex(code)
-    if not valid:
+    if not valid_hex(code):
         return f'<div><h1>{color} is not a valid hex color"</h1></div>'
 
-    styling = f"""<style>
-    .color-h1 \{
-        text-shadow: 0 1px 1px #111111;
-        color: #fff;
-    \}
-    .background-div \{
-        color: #{code};
-    }
-    </style>
-    """
+    styling = (
+        """<style>
+        body, html {
+            margin: 0 0 0 0;
+            height: 100%;
+            width: 100%;
+        }
+        .color-h1 {
+            text-shadow: 0 1px 1px #111111;
+            color: #fff;
+        }
+        .background-div {
+        """
+        + "background-color: #" + code + ";"
+        + """
+          height: 100%;
+          width: 100%;
+        }
+        </style>
+        """
+    )
     color = f'<h1 class="color-h1"><span>#{code}</span></h1>'
-    return styling + f'<div class="background-div">{color}</div>'
-
+    return ("<html>\n"
+           + styling
+           + "<body\n>"
+           f'<div class="background-div">{color}</div>\n'
+           "</body\n>"
+           "</html>\n"
+           )
