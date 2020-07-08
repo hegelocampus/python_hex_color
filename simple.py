@@ -5,11 +5,9 @@ import re
 app = Flask(__name__)
 app.config.from_object(Config)
 
-toots = 'This worked?'
-
 n_file_value = open('value.txt', 'r+')
 
-n = n_file_value.read() if n_file_value.read() else 2
+n = n_file_value.read() if n_file_value.read() else ""
 
 def plus():
     global n
@@ -19,12 +17,24 @@ def plus():
     return n
 
 def valid_hex(code):
-    return re.match(r"^[a-f1-9]{6,6}$", code, re.I) is not None
+    return re.match(r"^[a-f\d]{6,6}|[a-f\d]{3,3}$", code, re.I) is not None
 
 @app.route('/color/<string:code>')
 def basics(code):
     valid = valid_hex(code)
-    styling = "" if not valid else f' style="color:#{code}"'
-    color = f'<span{styling}>#{code}</span>'
-    return f'<h1>{color} is {"a" if valid else "not a"} valid hex color"</h1>'
+    if not valid:
+        return f'<div><h1>{color} is not a valid hex color"</h1></div>'
+
+    styling = f"""<style>
+    .color-h1 \{
+        text-shadow: 0 1px 1px #111111;
+        color: #fff;
+    \}
+    .background-div \{
+        color: #{code};
+    }
+    </style>
+    """
+    color = f'<h1 class="color-h1"><span>#{code}</span></h1>'
+    return styling + f'<div class="background-div">{color}</div>'
 
