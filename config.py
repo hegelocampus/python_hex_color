@@ -1,4 +1,5 @@
+import os
+
 class Config(object):
-    GREETING = "HELLO, HOW ARE YOU!"
-    BYE = "L8R G8R!"
+    SECRET_KEY= os.environ.get('SECRET_KEY') or 'default-key'
 
